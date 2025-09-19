@@ -1,17 +1,18 @@
 package br.com.mindwell.model;
 
-import br.com.mindwell.dto.DadosAtualizacaoPsicologo;
+import br.com.mindwell.dto.DadosAtualizacaoPaciente;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
-@Entity(name = "Psicologo")
-@Table(name = "psicologos")
+@Entity(name = "Paciente")
+@Table(name = "pacientes")
 @Getter
 @Setter
-public class Psicologo {
+public class Paciente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -24,12 +25,15 @@ public class Psicologo {
 
     private String senha;
 
-    private String crp; // Conselho Regional de Psicologia
+    private String telefone;
 
-    @Column(unique = true)
-    private String codigoDeAssociacao;
+    private LocalDate dataNascimento;
 
-    public void atualizarInformacoes(DadosAtualizacaoPsicologo dados) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "psicologo_id")
+    private Psicologo psicologo;
+
+    public void atualizarInformacoes(DadosAtualizacaoPaciente dados) {
         if (dados.nome() != null) {
             this.nome = dados.nome();
         }
@@ -37,5 +41,4 @@ public class Psicologo {
             this.email = dados.email();
         }
     }
-
 }
