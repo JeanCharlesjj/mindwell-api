@@ -18,6 +18,7 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(req -> {
                     req.requestMatchers("/psicologos/**").permitAll();
                     req.requestMatchers("/pacientes/**").permitAll();
+                    req.requestMatchers("/consultas/**").permitAll();
 
                     req.anyRequest().authenticated();
                 })
