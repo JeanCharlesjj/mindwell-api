@@ -1,6 +1,7 @@
 package br.com.mindwell.service;
 
 import br.com.mindwell.dto.DadosAgendamentoConsulta;
+import br.com.mindwell.dto.DadosAnotacaoConsulta;
 import br.com.mindwell.model.Consulta;
 import br.com.mindwell.model.Paciente;
 import br.com.mindwell.model.Psicologo;
@@ -11,6 +12,7 @@ import br.com.mindwell.repository.PsicologoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -46,5 +48,45 @@ public class ConsultaService {
 
         // 4. Salva no banco e retorna
         return consultaRepository.save(novaConsulta);
+    }
+
+    public Consulta aceitar(UUID idConsulta) {
+        Consulta consulta = consultaRepository.findById(idConsulta)
+                .orElseThrow(() -> new RuntimeException("Consulta não encontrada"));
+
+        if (consulta.getStatus() != StatusConsulta.PENDENTE_ACEITE) {
+            throw new RuntimeException("Apenas consultas com status PENDENTE_ACEITE podem ser aceitas.");
+        }
+
+        consulta.setStatus(StatusConsulta.AGENDADA);
+        return consultaRepository.save(consulta);
+    }
+
+    public Consulta recusar(UUID idConsulta) {
+        Consulta consulta = consultaRepository.findById(idConsulta)
+                .orElseThrow(() -> new RuntimeException("Consulta não encontrada"));
+
+        if (consulta.getStatus() != StatusConsulta.PENDENTE_ACEITE) {
+            throw new RuntimeException("Apenas consultas com status PENDENTE_ACEITE podem ser recusadas.");
+        }
+
+        consulta.setStatus(StatusConsulta.CANCELADA);
+        return consultaRepository.save(consulta);
+    }
+
+    public List<Consulta> buscarPorPsicologo(UUID psicologoId) {
+        return consultaRepository.findByPsicologoId(psicologoId);
+    }
+
+    // NOSSO NOVO MÉTODO:
+    public List<Consulta> buscarPorPaciente(UUID pacienteId) {
+        return consultaRepository.findByPacienteId(pacienteId);
+    }
+
+    public void salvarAnotacao(UUID idConsulta, DadosAnotacaoConsulta dados) {
+        Consulta consulta = consultaRepository.findById(idConsulta)
+                .orElseThrow(() -> new RuntimeException("Consulta não encontrada"));
+
+        consulta.setAnotacao(dados.texto());
     }
 }

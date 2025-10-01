@@ -2,11 +2,15 @@ package br.com.mindwell.controller;
 
 import br.com.mindwell.dto.DadosAtualizacaoPsicologo;
 import br.com.mindwell.dto.DadosCadastroPsicologo;
+import br.com.mindwell.dto.DadosDetalhamentoConsulta;
 import br.com.mindwell.dto.DadosListagemPsicologo;
+import br.com.mindwell.model.Consulta;
 import br.com.mindwell.model.Psicologo;
 import br.com.mindwell.repository.PsicologoRepository;
+import br.com.mindwell.service.ConsultaService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +22,9 @@ public class PsicologoController {
 
     @Autowired
     private PsicologoRepository repository;
+
+    @Autowired
+    private ConsultaService consultaService;
 
     @PostMapping
     @Transactional
@@ -48,5 +55,16 @@ public class PsicologoController {
     @Transactional
     public void deletar(@PathVariable UUID id) {
         repository.deleteById(id);
+    }
+
+    @GetMapping("/{idPsicologo}/consultas")
+    public ResponseEntity<List<DadosDetalhamentoConsulta>> listarConsultas(@PathVariable UUID idPsicologo) {
+        List<Consulta> consultas = consultaService.buscarPorPsicologo(idPsicologo);
+
+        List<DadosDetalhamentoConsulta> dtos = consultas.stream()
+                .map(DadosDetalhamentoConsulta::new)
+                .toList();
+
+        return ResponseEntity.ok(dtos);
     }
 }

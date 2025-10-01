@@ -6,8 +6,8 @@ import br.com.mindwell.model.Consulta;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record DadosDetalhamentoConsulta(UUID id, UUID idPsicologo, UUID idPaciente, LocalDateTime dataHora, StatusConsulta status) {
+public record DadosDetalhamentoConsulta(UUID id, UUID idPsicologo, UUID idPaciente, LocalDateTime dataHora, StatusConsulta status, String anotacao) {
     public DadosDetalhamentoConsulta(Consulta consulta) {
-        this(consulta.getId(), consulta.getPsicologo().getId(), consulta.getPaciente().getId(), consulta.getDataHora(), consulta.getStatus());
+        this(consulta.getId(), consulta.getPsicologo().getId(), consulta.getPaciente().getId(), consulta.getDataHora(), consulta.getStatus(), consulta.getAnotacao());
     }
 }

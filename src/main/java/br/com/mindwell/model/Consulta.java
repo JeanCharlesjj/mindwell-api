@@ -32,4 +32,6 @@ public class Consulta {
     @Enumerated(EnumType.STRING)
     private StatusConsulta status;
 
+    @Column(columnDefinition = "TEXT")
+    private String anotacao;
 }
